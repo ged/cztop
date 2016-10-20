@@ -187,6 +187,34 @@ module CZTop
         Zsock.set_plain_password(@zocket, password)
       end
 
+      # @return [Boolean] whether this zocket acts as a server for GSSAPI
+      def GSSAPI_server?() Zsock.gssapi_server(@zocket) > 0 end
+      # Make this zocket act as a server for GSSAPI.
+      # @param bool [Boolean]
+      def GSSAPI_server=(bool)
+        Zsock.set_gssapi_server(@zocket, bool ? 1 : 0)
+      end
+      def GSSAPI_principal
+        return nil if mechanism != :GSSAPI
+        Zsock.gssapi_principal(@zocket).read_string
+      end
+      def GSSAPI_principal=(principal)
+        Zsock.set_gssapi_principal(@zocket, principal)
+      end
+      def GSSAPI_service_principal
+        return nil if mechanism != :GSSAPI
+        Zsock.gssapi_service_principal(@zocket).read_string
+      end
+      def GSSAPI_service_principal=(service_principal)
+        Zsock.set_gssapi_service_principal(@zocket, service_principal)
+      end
+      # @return [Boolean] whether communication will be plaintext for GSSAPI
+      def GSSAPI_plaintext?() Zsock.gssapi_plaintext(@zocket) > 0 end
+      # Enable/disable encryption for GSSAPI.
+      # @param bool [Boolean] whether plaintext should be used
+      def GSSAPI_plaintext=(bool)
+        Zsock.set_gssapi_plaintext(@zocket, bool ? 1 : 0)
+      end
       # @!endgroup
 
       # @!group Send and Receive Timeouts
@@ -294,10 +322,6 @@ module CZTop
 
 # TODO: a reasonable subset of these
 #//  Get socket options
-#int zsock_gssapi_server (void *self);
-#int zsock_gssapi_plaintext (void *self);
-#char * zsock_gssapi_principal (void *self);
-#char * zsock_gssapi_service_principal (void *self);
 #int zsock_immediate (void *self);
 #int zsock_type (void *self);
 #int zsock_affinity (void *self);
@@ -323,10 +347,6 @@ module CZTop
 #void zsock_set_req_relaxed (void *self, int req_relaxed);
 #void zsock_set_req_correlate (void *self, int req_correlate);
 #void zsock_set_conflate (void *self, int conflate);
-#void zsock_set_gssapi_server (void *self, int gssapi_server);
-#void zsock_set_gssapi_plaintext (void *self, int gssapi_plaintext);
-#void zsock_set_gssapi_principal (void *self, const char * gssapi_principal);
-#void zsock_set_gssapi_service_principal (void *self, const char * gssapi_service_principal);
 #void zsock_set_immediate (void *self, int immediate);
 #void zsock_set_delay_attach_on_connect (void *self, int delay_attach_on_connect);
 #void zsock_set_affinity (void *self, int affinity);

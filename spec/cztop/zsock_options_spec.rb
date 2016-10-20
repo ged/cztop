@@ -106,6 +106,17 @@ describe CZTop::ZsockOptions do
       end
     end
 
+    describe "#GSSAPI_server" do
+      let(:socket) { CZTop::Socket::REP.new(endpoint) }
+      it "can be set" do
+        options.GSSAPI_server = true
+        assert_operator options, :GSSAPI_server?
+      end
+    end
+    describe "#GSSAPI_plaintext" # TODO
+    describe "#GSSAPI_principal" # TODO
+    describe "#GSSAPI_service_principal" # TODO
+
     describe "#mechanism" do
       context "with no security" do
         it "returns :NULL" do
@@ -121,7 +132,8 @@ describe CZTop::ZsockOptions do
         Then { :CURVE == options.mechanism }
       end
       context "with GSSAPI security" do
-        it "returns :GSSAPI"
+        When { options.GSSAPI_server = true } # FIXME
+        Then { :GSSAPI == options.mechanism }
       end
       context "with unknown security mechanism" do
         before(:each) do
